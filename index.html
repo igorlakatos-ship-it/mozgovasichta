@@ -442,7 +442,7 @@ input[type=text],input[type=password],textarea{font-size:16px}
   const today=()=>{const t=new Date();return t.getFullYear()+"-"+String(t.getMonth()+1).padStart(2,"0")+"-"+String(t.getDate()).padStart(2,"0");};
   const TODAY=today();
   const HINT_COST = 3;
-  const VERSION = "5.14";
+  const VERSION = "5.15";
   $("ver").textContent="verzia "+VERSION;
   if(XMAS){ startSnow(); }
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -601,7 +601,7 @@ input[type=text],input[type=password],textarea{font-size:16px}
     if(!canSpeak) return;
     const v=speechSynthesis.getVoices();
     // vyber najprirodzenejší slovenský hlas (vylepšené/premium/neurálne verzie majú prednosť)
-    const score=x=>(/premium|enhanced|vylepš|natural|neural|online/i.test(x.name)?10:0)+(/google|microsoft/i.test(x.name)?3:0)+(x.localService?0:1);
+    const score=x=>(/premium|enhanced|vylepš|natural|neural/i.test(x.name)?10:0)+(/google|microsoft/i.test(x.name)?3:0)+(x.localService?1:0);
     const sk=v.filter(x=>/^sk/i.test(x.lang)).sort((a,b)=>score(b)-score(a));
     skVoice=sk[0]||v.find(x=>/^cs/i.test(x.lang))||null;
   }
