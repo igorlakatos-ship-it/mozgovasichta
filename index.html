@@ -443,7 +443,7 @@ input[type=text],input[type=password],textarea{font-size:16px}
   const today=()=>{const t=new Date();return t.getFullYear()+"-"+String(t.getMonth()+1).padStart(2,"0")+"-"+String(t.getDate()).padStart(2,"0");};
   const TODAY=today();
   const HINT_COST = 3;
-  const VERSION = "5.8";
+  const VERSION = "5.9";
   $("ver").textContent="verzia "+VERSION;
   if(XMAS){ startSnow(); }
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -1124,7 +1124,7 @@ input[type=text],input[type=password],textarea{font-size:16px}
     const ul=$("rList"); ul.innerHTML="";
     let rows;
     try{ rows=await loadRounds(); }catch(err){ ul.innerHTML='<li class="muted">Server neodpovedá, skús to o chvíľu.</li>'; return; }
-    rows=rows.slice().sort((a,b)=>b.round_no-a.round_no).slice(0,6);
+    rows=rows.slice().sort((a,b)=>String(b.available_on).localeCompare(String(a.available_on))).slice(0,6);
     const todayNo=rows.length?rows[0].round_no:0;
     const solvedRows=rows.filter(r=>r.status==="solved");
     const sumSh=solvedRows.reduce((a,r)=>a+(+r.score||0),0);
