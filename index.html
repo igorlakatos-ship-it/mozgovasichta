@@ -442,7 +442,7 @@ input[type=text],input[type=password],textarea{font-size:16px}
   const today=()=>{const t=new Date();return t.getFullYear()+"-"+String(t.getMonth()+1).padStart(2,"0")+"-"+String(t.getDate()).padStart(2,"0");};
   const TODAY=today();
   const HINT_COST = 3;
-  const VERSION = "5.15";
+  const VERSION = "5.16";
   $("ver").textContent="verzia "+VERSION;
   if(XMAS){ startSnow(); }
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -1051,11 +1051,15 @@ input[type=text],input[type=password],textarea{font-size:16px}
     render(false);
   };
 
+  const FUN_WIN=["Mozog išiel na plný výkon. Kto ďalší dá šichtu?","Zlatý mozog odpracovaný. Výplata v šichtách.","Šichta v kľude odrobená. Skúsiš to lepšie?"];
+  const FUN_GIVE=["Šichta skončila predčasne. Odborová organizácia nesúhlasí.","Vzdať sa je tiež výsledok. Dochádzka aspoň v poriadku.","Mozog šiel na obed a nevrátil sa. Kto ho nájde?"];
   $("wShare").onclick=()=>{
     const score=S.score!=null?S.score:S.attempts;
     const head="Mozgová šichta"+(G.title?" – "+G.title:"");
     const res=S.status==="gave_up"?"Vzdal/a som sa po "+S.attempts+" pokusoch 🏳️":"Zlatý mozog na "+S.attempts+". pokus 🧠"+(S.hinted?" (s nápovedou)":"");
-    const text=head+"\n"+res+" · skóre "+score+" šichiet\n"+location.href.split("#")[0]+"#k"+G.no;
+    const pool=S.status==="gave_up"?FUN_GIVE:FUN_WIN;
+    const fun=pool[Math.floor(Math.random()*pool.length)];
+    const text=head+"\n"+res+" · skóre "+score+" šichiet\n"+fun+"\n"+location.href.split("#")[0];
     if(navigator.share) navigator.share({text}).catch(()=>{});
     else copy(text,$("wShare"),"Zdieľať výsledok");
   };
