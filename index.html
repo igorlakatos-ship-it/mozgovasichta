@@ -1178,7 +1178,7 @@ input[type=text],input[type=password],textarea{font-size:16px}
     if(!r.ok){ box.textContent=r.error; return; }
     box.innerHTML="";
     const h=document.createElement("p"); h.style.fontWeight="800"; h.style.margin="0 0 6px";
-    h.textContent=r.round?"Dnes – kolo "+r.round+": pokusy kamošov":"Dnes zatiaľ nie je žiadne kolo";
+    h.textContent=r.round?"Dnešné slovo: pokusy kamošov":"Dnes zatiaľ nie je žiadne slovo";
     box.appendChild(h);
     (r.rows||[]).forEach(row=>{
       const p=document.createElement("p"); p.style.margin="2px 0";
