@@ -105,8 +105,8 @@ ul.guesses li.last{background:color-mix(in srgb,var(--coin) 22%,transparent);mar
 .hidden{display:none!important}
 .who-line{margin:6px 0 0;color:#fff;font-weight:800;text-shadow:2px 2px 0 rgba(0,0,0,.45)}
 .who-line button{font:inherit;color:#fff;background:none;border:0;text-decoration:underline;cursor:pointer;padding:4px;text-shadow:inherit}
-.overlay{position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.55);display:grid;place-items:center;padding:16px}
-.overlay .panel{width:100%;max-width:420px;margin:0;padding-bottom:calc(env(safe-area-inset-bottom,0px) + 72px)}
+.overlay{position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.55);display:grid;place-items:center;padding:16px;overflow-y:auto}
+.overlay .panel{width:100%;max-width:420px;margin:auto;padding-bottom:calc(env(safe-area-inset-bottom,0px) + 72px)}
 .gender{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
 .gender .btn{padding:16px 10px;font-size:14px}
 .ver{text-align:center;font-size:10px;color:#fff;margin:0 0 10px;opacity:.85;text-shadow:1px 1px 0 rgba(0,0,0,.5);position:relative;z-index:1}
