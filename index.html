@@ -264,15 +264,6 @@ input[type=text],input[type=password],textarea{font-size:16px}
 
   <section id="vGroups" class="hidden">
     <div class="panel">
-      <h2>👥 Skupiny</h2>
-      <p class="muted">Po vytvorení skupiny dostaneš jej kód. Pošli ho kamarátom, nech sa pripoja a uvidíte spolu rebríček.</p>
-      <p class="msg" id="gGroupMsg" role="status"></p>
-      <label for="gNewName">Nová skupina</label>
-      <div class="row"><input type="text" id="gNewName" maxlength="30" placeholder="napr. Kamoši z Bratislavy"><button class="btn" id="gCreate" type="button">Vytvoriť</button></div>
-      <label for="gJoinCode">Pripojiť sa kódom</label>
-      <div class="row"><input type="text" id="gJoinCode" placeholder="kokotina-37" autocapitalize="off" spellcheck="false"><button class="btn gold" id="gJoin" type="button">Pripojiť</button></div>
-    </div>
-    <div class="panel">
       <h2>Moje skupiny</h2>
       <ul class="rlist" id="gMine"></ul>
     </div>
@@ -280,6 +271,15 @@ input[type=text],input[type=password],textarea{font-size:16px}
       <h2 id="gBoardTitle"></h2>
       <p class="hstats" id="gBoardCode"></p>
       <ul class="rlist" id="gBoardList"></ul>
+    </div>
+    <div class="panel">
+      <h2>👥 Založ alebo pridaj skupinu</h2>
+      <p class="muted">Skupina sú tvoji kamoši, kolegovia v práci, spolužiaci, susedia alebo manželka. Pošli im kód a uvidíte, kto je na slová najrýchlejší. Kód ti vygenerujeme sami.</p>
+      <p class="msg" id="gGroupMsg" role="status"></p>
+      <label for="gNewName">Nová skupina</label>
+      <div class="row"><input type="text" id="gNewName" maxlength="30" placeholder="napr. Susedská hliadka"><button class="btn" id="gCreate" type="button">Vytvoriť</button></div>
+      <label for="gJoinCode">Pripojiť sa kódom</label>
+      <div class="row"><input type="text" id="gJoinCode" placeholder="vygenerujem ti ho" autocapitalize="off" spellcheck="false"><button class="btn gold" id="gJoin" type="button">Pripojiť</button></div>
     </div>
   </section>
 
