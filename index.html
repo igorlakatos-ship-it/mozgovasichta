@@ -163,8 +163,8 @@ ul.guesses li.last{background:color-mix(in srgb,var(--coin) 22%,transparent);mar
 .track .mk{position:absolute;bottom:24px;width:2px;height:10px;background:rgba(0,0,0,.35)}
 .track .flag{position:absolute;left:6px;bottom:26px;font-size:20px}
 .track .castle{filter:sepia(1) saturate(5) hue-rotate(-12deg) brightness(1.15) drop-shadow(0 0 4px #FFD700);position:absolute;right:4px;bottom:22px;font-size:36px;line-height:1}
-.track .ig{position:absolute;bottom:23px;left:calc(34px + (100% - 130px)*var(--p));width:52px;height:52px;transition:left 1.1s steps(9);z-index:2}
-.track .ig img{width:52px;height:52px;image-rendering:pixelated;display:block}
+.track .ig{position:absolute;bottom:23px;left:calc(34px + (100% - 142px)*var(--p));width:64px;height:64px;transition:left 1.1s steps(9);z-index:2}
+.track .ig img{width:64px;height:64px;image-rendering:pixelated;display:block}
 .track .ig.walk img{animation:igwalk .24s steps(2) infinite}
 .track .ig.back img{transform:scaleX(-1)}
 .track .ig.jump{animation:igjump .5s ease-out 2}
@@ -316,7 +316,7 @@ input[type=text],input[type=password],textarea{font-size:16px}
       <div class="road"></div>
       <span aria-hidden="true" class="mk" style="left:calc(34px + (100% - 110px)*.2 + 15px)"></span><span class="mk" style="left:calc(34px + (100% - 110px)*.4 + 15px)"></span><span class="mk" style="left:calc(34px + (100% - 110px)*.6 + 15px)"></span><span class="mk" style="left:calc(34px + (100% - 110px)*.8 + 15px)"></span>
       <span class="flag" aria-hidden="true">🚩</span><span class="castle" aria-hidden="true">🧠</span>
-      <div class="ig" id="igor" aria-hidden="true"><span class="ip" id="igorP">štart</span><img alt="" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAABFElEQVR4nO2Urw7CMBDGvxE0QaL2ENN9gD3DNHoPMDExMYlEzbJnmEKQYafRKCTBIItY2rRd/2xQAmK/pLmkvevXu7YHzPw7gW4yCQk1BdTXNnCt6+aXOoFDU5uPFie0KnPzelZQnSAXSkJCrQIKXdMCAKKYSPP8EFlBRTEpoymoAi4WQJ9NVeZ4dhc+zmUlWTZ0sOyYBfrMxLtc2E7cNS23Nsb4GoXYBqL9xNcq5JOBkK7eY3DFDYRc9Tb9IVccf+fs5flimxXSp3Xe0dgSuvykNsHePctMLEUUEzxudyl4tVkP/PanI4BhC5rUVHdpqhViqOVyCplIQkJFMVXIJva7f/Qt3u7eQF8mFW93NGbTGa+8AFyanvCvHbFgAAAAAElFTkSuQmCC"></div>
+      <div class="ig" id="igor" aria-hidden="true"><span class="ip" id="igorP">štart</span><img alt="" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABm0lEQVR4nO1VIU/DQBR+Jcgp0gRNMMU2SzBFzBxiU4iK/g5+BmYY/sFExRSYMzM1GAxiNVWoJU0TEiwpYly5Xt+9u2sXYMm+ZMmae73vu973vQdwwB/DcylOI1ZT63HGnfYDADh2IWXJlK4FaGptxWiLBLGJVAe+eLISgi6mEatl4iovWusnwXnreTSbAADAx+MKFUKJOMLIbxZ3lGiUHEOVFzAOA9I7LQGCHDuJgHx6E7kAS6ZaER0T6sh1nx17T5Cfzec/Bd+e0ApQ750ipwSrfrk43b673hSQXl3Xqh+MMbQllskpwSp6C8CAEa83W1Gfb69mAaPZhDSgK94f7o015Beg8i+bcIjoJoZxxr1lcttrEzURVV40PwFdQ+o0IhnyiV2S4IKOIiqOLpATQbVjq1kwBKZZgJowzrgnRqs6lHRX8cKfewk0zmy5h4/DwKnJCDhfgY0YAdur0olw6oTYBinAIL+QMfwNDBYQZ9zjmlErsDMPUEgjVvu+3zyXZdn8d45hX4TsEgDM2Zex/x7YewE79YApDf8SX/kfu3kSVfqhAAAAAElFTkSuQmCC"></div>
     </div>
     <div class="tb hidden" id="igorSay" aria-live="polite"><span id="igorSayText"></span><span class="tt"></span></div>
     </div>
