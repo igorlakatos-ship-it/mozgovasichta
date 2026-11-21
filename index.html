@@ -442,7 +442,7 @@ input[type=text],input[type=password],textarea{font-size:16px}
   const today=()=>{const t=new Date();return t.getFullYear()+"-"+String(t.getMonth()+1).padStart(2,"0")+"-"+String(t.getDate()).padStart(2,"0");};
   const TODAY=today();
   const HINT_COST = 3;
-  const VERSION = "5.12";
+  const VERSION = "5.13";
   $("ver").textContent="verzia "+VERSION;
   if(XMAS){ startSnow(); }
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -491,9 +491,18 @@ input[type=text],input[type=password],textarea{font-size:16px}
   let ac=null, muted=!!store.get("is_muted");
   function audio(){
     if(muted) return null;
-    if(!ac){ try{ ac=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ return null; } }
+    if(!ac){ try{ ac=new (window.AudioContext||window.webkitAudioContext)(); master=ac.createGain(); master.connect(ac.destination); }catch(e){ return null; } }
     if(ac.state==="suspended") ac.resume();
     return ac;
+  }
+  /* hlavný regulátor hlasitosti: pri hlase hudbu a efekty plynulo stíšime, aby nepraskali */
+  let master=null, duckT=null;
+  function duck(on){
+    if(!ac||!master) return;
+    const t=ac.currentTime;
+    master.gain.cancelScheduledValues(t);
+    master.gain.setValueAtTime(master.gain.value,t);
+    master.gain.linearRampToValueAtTime(on?0.0001:1,t+(on?0.05:0.25));
   }
   function play(notes,type="square",vol=.07){
     const a=audio(); if(!a) return;
@@ -504,7 +513,7 @@ input[type=text],input[type=password],textarea{font-size:16px}
       o.type=tp||type; o.frequency.setValueAtTime(f,t0+start);
       g.gain.setValueAtTime(vol,t0+start);
       g.gain.exponentialRampToValueAtTime(.0001,t0+start+dur);
-      o.connect(g).connect(a.destination); o.start(t0+start); o.stop(t0+start+dur+.03);
+      o.connect(g).connect(master||a.destination); o.start(t0+start); o.stop(t0+start+dur+.03);
     });
   }
   const N={C3:131,G3:196,C4:262,D4:294,E4:330,F4:349,G4:392,A4:440,B4:494,C5:523,D5:587,E5:659,F5:698,G5:784,A5:880,B5:988,C6:1047,D6:1175,E6:1319,G6:1568,C7:2093};
@@ -555,7 +564,7 @@ input[type=text],input[type=password],textarea{font-size:16px}
   function note(a,f,t,dur,type,vol){
     const o=a.createOscillator(),g=a.createGain(); o.type=type; o.frequency.setValueAtTime(f,t);
     g.gain.setValueAtTime(vol,t); g.gain.exponentialRampToValueAtTime(.0001,t+dur);
-    o.connect(g).connect(a.destination); o.start(t); o.stop(t+dur+.02);
+    o.connect(g).connect(master||a.destination); o.start(t); o.stop(t+dur+.02);
   }
   function sched(){
     const a=ac; if(!a||!cur) return;
@@ -607,6 +616,10 @@ input[type=text],input[type=password],textarea{font-size:16px}
       const u=new SpeechSynthesisUtterance(clean);
       u.lang=skVoice?skVoice.lang:"sk-SK"; if(skVoice) u.voice=skVoice;
       u.rate=1; u.pitch=1; u.volume=1;
+      const restore=()=>{ clearTimeout(duckT); duck(false); };
+      u.onend=restore; u.onerror=restore;
+      duck(true);
+      duckT=setTimeout(restore,Math.min(12000,800+clean.length*90));
       speechSynthesis.speak(u);
     }catch(e){}
   }
