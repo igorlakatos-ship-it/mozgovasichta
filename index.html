@@ -443,7 +443,7 @@ input[type=text],input[type=password],textarea{font-size:16px}
   const today=()=>{const t=new Date();return t.getFullYear()+"-"+String(t.getMonth()+1).padStart(2,"0")+"-"+String(t.getDate()).padStart(2,"0");};
   const TODAY=today();
   const HINT_COST = 3;
-  const VERSION = "5.9";
+  const VERSION = "5.10";
   $("ver").textContent="verzia "+VERSION;
   if(XMAS){ startSnow(); }
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
