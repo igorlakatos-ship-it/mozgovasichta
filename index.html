@@ -881,7 +881,7 @@ input[type=text],input[type=password],textarea{font-size:16px}
     G={no:row.round_no,title:row.title,popici:row.is_popici,sk:row.is_sk};
     const loc=store.get(lkey(no))||{guesses:[],hinted:false};
     S={guesses:loc.guesses||[],hinted:!!row.hinted,attempts:row.attempts||0,status:row.status,secret:row.secret||null,score:row.score,freeHint:!!loc.freeHint,hintFree:!!loc.hintFree};
-    $("roundName").textContent=G.title; $("roundName").classList.remove("hidden");
+    $("roundName").textContent=""; $("roundName").classList.add("hidden");
     document.body.classList.toggle("popici",!!G.popici);
     $("gMsg").textContent=""; $("gRoast").classList.add("hidden"); bubble(""); $("gInput").value="";
     $("wRoastText").textContent="";
@@ -1124,10 +1124,7 @@ input[type=text],input[type=password],textarea{font-size:16px}
     const ul=$("rList"); ul.innerHTML="";
     let rows;
     try{ rows=await loadRounds(); }catch(err){ ul.innerHTML='<li class="muted">Server neodpovedá, skús to o chvíľu.</li>'; return; }
-    const todayS=new Date().toLocaleDateString("sv-SE",{timeZone:"Europe/Bratislava"});
-    const _m=new Date(todayS+"T12:00:00"); _m.setDate(_m.getDate()-5); const minS=_m.toLocaleDateString("sv-SE");
-    rows=rows.filter(r=>{ const d=String(r.available_on||"").slice(0,10); return d && d<=todayS && d>=minS; });
-    rows=rows.slice().sort((a,b)=>String(b.available_on).localeCompare(String(a.available_on)));
+    rows=rows.slice().sort((a,b)=>b.round_no-a.round_no).slice(0,6);
     const todayNo=rows.length?rows[0].round_no:0;
     const solvedRows=rows.filter(r=>r.status==="solved");
     const sumSh=solvedRows.reduce((a,r)=>a+(+r.score||0),0);
@@ -1141,9 +1138,7 @@ input[type=text],input[type=password],textarea{font-size:16px}
       else if(r.attempts>0){ txt="Rozohrané · "+r.attempts+" pokusov"; btn="Pokračovať"; }
       const li=document.createElement("li");
       li.innerHTML='<div><div class="rn"></div><div class="rs"></div></div><a class="btn"></a>';
-      const dd=String(r.available_on||"").slice(0,10);
-      const lbl=dd?new Date(dd+"T12:00:00").toLocaleDateString("sk-SK",{day:"numeric",month:"long"}):"Staršie slovo";
-      li.querySelector(".rn").textContent=lbl+(r.round_no===todayNo?" · dnes 🎯":"")+(r.is_popici?" · 😈 popiči":"");
+      li.querySelector(".rn").textContent=(i===0?"Dnešné slovo 🎯":"Predošlé slovo")+(r.is_popici?" · 😈 popiči":"");
       li.querySelector(".rs").textContent=txt;
       const a=li.querySelector("a");
       if(locked){
