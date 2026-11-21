@@ -442,7 +442,7 @@ input[type=text],input[type=password],textarea{font-size:16px}
   const today=()=>{const t=new Date();return t.getFullYear()+"-"+String(t.getMonth()+1).padStart(2,"0")+"-"+String(t.getDate()).padStart(2,"0");};
   const TODAY=today();
   const HINT_COST = 3;
-  const VERSION = "5.13";
+  const VERSION = "5.14";
   $("ver").textContent="verzia "+VERSION;
   if(XMAS){ startSnow(); }
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -491,7 +491,8 @@ input[type=text],input[type=password],textarea{font-size:16px}
   let ac=null, muted=!!store.get("is_muted");
   function audio(){
     if(muted) return null;
-    if(!ac){ try{ ac=new (window.AudioContext||window.webkitAudioContext)(); master=ac.createGain(); master.connect(ac.destination); }catch(e){ return null; } }
+    if(!ac){ try{ ac=new (window.AudioContext||window.webkitAudioContext)(); master=ac.createGain(); master.connect(ac.destination);
+      const keep=ac.createOscillator(), kg=ac.createGain(); kg.gain.value=0.00001; keep.connect(kg).connect(ac.destination); keep.start(); }catch(e){ return null; } }
     if(ac.state==="suspended") ac.resume();
     return ac;
   }
@@ -612,7 +613,7 @@ input[type=text],input[type=password],textarea{font-size:16px}
     const clean=text.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu,"").replace(/[„“"]/g,"").trim();
     if(!clean) return;
     try{
-      speechSynthesis.cancel();
+      if(speechSynthesis.speaking||speechSynthesis.pending) speechSynthesis.cancel();
       const u=new SpeechSynthesisUtterance(clean);
       u.lang=skVoice?skVoice.lang:"sk-SK"; if(skVoice) u.voice=skVoice;
       u.rate=1; u.pitch=1; u.volume=1;
