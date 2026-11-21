@@ -443,7 +443,7 @@ input[type=text],input[type=password],textarea{font-size:16px}
   const today=()=>{const t=new Date();return t.getFullYear()+"-"+String(t.getMonth()+1).padStart(2,"0")+"-"+String(t.getDate()).padStart(2,"0");};
   const TODAY=today();
   const HINT_COST = 3;
-  const VERSION = "5.7";
+  const VERSION = "5.8";
   $("ver").textContent="verzia "+VERSION;
   if(XMAS){ startSnow(); }
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -1168,12 +1168,36 @@ input[type=text],input[type=password],textarea{font-size:16px}
       ul.appendChild(li);
     });
   }
+  async function loadToday(code){
+    const ul=$("gBoardList");
+    let box=$("gTodayBox");
+    if(!box){ box=document.createElement("div"); box.id="gTodayBox"; box.style.margin="0 0 12px"; ul.insertAdjacentElement("beforebegin",box); }
+    box.textContent="Načítavam dnešné kolo…";
+    let r;
+    try{ r=await rpc("group_today",{p_nick:AUTH.nick,p_pin:AUTH.token,p_code:code}); }catch(e){ box.textContent="Dnešné kolo sa nepodarilo načítať."; return; }
+    if(!r.ok){ box.textContent=r.error; return; }
+    box.innerHTML="";
+    const h=document.createElement("p"); h.style.fontWeight="800"; h.style.margin="0 0 6px";
+    h.textContent=r.round?"Dnes – kolo "+r.round+": pokusy kamošov":"Dnes zatiaľ nie je žiadne kolo";
+    box.appendChild(h);
+    (r.rows||[]).forEach(row=>{
+      const p=document.createElement("p"); p.style.margin="2px 0";
+      let t;
+      if(row.status==="solved") t="👑 uhádol na "+row.attempts+". pokus";
+      else if(row.status==="gave_up") t="🏳️ vzdal po "+row.attempts+" pokusoch";
+      else if(row.status==="open" && row.attempts>0) t="rozohraté · "+row.attempts+" pokusov";
+      else t="ešte nehral";
+      p.textContent=row.nickname+": "+t;
+      box.appendChild(p);
+    });
+  }
   async function openBoard(code,name){
     let r;
     try{ r=await rpc("group_leaderboard",{p_nick:AUTH.nick,p_pin:AUTH.token,p_code:code}); }catch(e){ groupMsg("Server neodpovedá, skús to o chvíľu."); return; }
     if(!r.ok){ groupMsg(r.error); return; }
     $("gBoardTitle").textContent="🏆 "+name;
     $("gBoardCode").textContent="Kód skupiny: "+code;
+    loadToday(code);
     const ul=$("gBoardList"); ul.innerHTML="";
     r.rows.forEach((row,i)=>{
       const li=document.createElement("li");
