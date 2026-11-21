@@ -1124,23 +1124,35 @@ input[type=text],input[type=password],textarea{font-size:16px}
     const ul=$("rList"); ul.innerHTML="";
     let rows;
     try{ rows=await loadRounds(); }catch(err){ ul.innerHTML='<li class="muted">Server neodpovedá, skús to o chvíľu.</li>'; return; }
-    rows=rows.slice().sort((a,b)=>b.round_no-a.round_no);
-    const todayNo=rows.length?Math.max(...rows.map(r=>r.round_no)):0;
+    const todayS=new Date().toLocaleDateString("sv-SE",{timeZone:"Europe/Bratislava"});
+    const _m=new Date(todayS+"T12:00:00"); _m.setDate(_m.getDate()-5); const minS=_m.toLocaleDateString("sv-SE");
+    rows=rows.filter(r=>{ const d=String(r.available_on||"").slice(0,10); return d && d<=todayS && d>=minS; });
+    rows=rows.slice().sort((a,b)=>String(b.available_on).localeCompare(String(a.available_on)));
+    const todayNo=rows.length?rows[0].round_no:0;
     const solvedRows=rows.filter(r=>r.status==="solved");
     const sumSh=solvedRows.reduce((a,r)=>a+(+r.score||0),0);
     const avgSh=solvedRows.length?(sumSh/solvedRows.length).toFixed(1):"–";
     $("rStats").textContent="Vyriešené: "+solvedRows.length+" z "+rows.length+" · priemer: "+avgSh+" šichiet na kolo";
-    rows.forEach(r=>{
+    rows.forEach((r,i)=>{
+      const locked=i>0 && rows[i-1].status!=="solved";
       let txt="Ešte nehrané", btn="Hrať";
       if(r.status==="solved"){ txt="👑 „"+r.secret+"“ · "+r.score+" šichiet"; btn="Pozrieť"; }
       else if(r.status==="gave_up"){ txt="🏳️ „"+r.secret+"“ – vzdané"; btn="Pozrieť"; }
       else if(r.attempts>0){ txt="Rozohrané · "+r.attempts+" pokusov"; btn="Pokračovať"; }
       const li=document.createElement("li");
       li.innerHTML='<div><div class="rn"></div><div class="rs"></div></div><a class="btn"></a>';
-      li.querySelector(".rn").textContent=r.title+(r.round_no===todayNo?" · dnes 🎯":"")+(r.is_popici?" · 😈 popiči":"");
+      const dd=String(r.available_on||"").slice(0,10);
+      const lbl=dd?new Date(dd+"T12:00:00").toLocaleDateString("sk-SK",{day:"numeric",month:"long"}):"Staršie slovo";
+      li.querySelector(".rn").textContent=lbl+(r.round_no===todayNo?" · dnes 🎯":"")+(r.is_popici?" · 😈 popiči":"");
       li.querySelector(".rs").textContent=txt;
-      const a=li.querySelector("a"); a.textContent=btn; a.href="#k"+r.round_no;
-      if(btn==="Hrať") a.classList.add("red");
+      const a=li.querySelector("a");
+      if(locked){
+        li.querySelector(".rs").textContent="🔒 Najprv uhádni novšie slovo";
+        a.textContent="Zamknuté"; a.classList.add("ghost"); a.href="#"; a.onclick=(e)=>e.preventDefault();
+      } else {
+        a.textContent=btn; a.href="#k"+r.round_no;
+        if(btn==="Hrať") a.classList.add("red");
+      }
       ul.appendChild(li);
     });
     if(!AUTH) toast(nudge(),"gold");
