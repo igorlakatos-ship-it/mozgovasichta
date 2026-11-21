@@ -242,7 +242,7 @@ input[type=text],input[type=password],textarea{font-size:16px}
   <header>
     <div class="title" aria-label="Mozgová šichta" id="title"></div>
     <p class="round-name hidden" id="roundName"></p>
-    <nav class="nav" id="nav"><a class="btn" id="navMain" href="#">🎯 Kolo dňa</a><a class="btn" id="navRounds" href="#kola">📜 Všetky kolá</a><a class="btn" id="navGroups" href="#skupiny">👥 Skupiny</a><button class="btn" id="navRules" type="button">❓ Pravidlá</button></nav>
+    <nav class="nav" id="nav"><a class="btn" id="navMain" href="#">🎯 Kolo dňa</a><a class="btn" id="navGroups" href="#skupiny">👥 Skupiny</a></nav>
     <div class="tools"><button class="sound" id="modeBtn" aria-label="Režim" title="Režim">🌸</button><button class="sound voice" id="voiceBtn" aria-label="Vypnúť hlas" title="Hlas komentátora">🗣️</button><button class="sound music" id="musicBtn" aria-label="Vypnúť hudbu" title="Hudba">🎵</button></div>
     <p class="who-line hidden" id="whoLine"><span id="whoName"></span> · <button type="button" id="whoEdit">zmeniť</button> · <button type="button" id="helpBtn">❓ návod</button></p>
   </header>
@@ -329,6 +329,13 @@ input[type=text],input[type=password],textarea{font-size:16px}
         <button class="btn red" type="submit">Hádať</button>
       </form>
       <p class="msg" id="gMsg" role="status"></p>
+      <div id="gTools">
+        <div class="row">
+          <button class="btn gold" id="gHint">💡 Nápoveda</button>
+          <button class="btn ghost" id="gGive">Vzdávam sa</button>
+        </div>
+        <p class="hint-cost" id="gHintCost">Nápoveda ťa bude stáť 3 pokusy navyše. Máš len jednu na hru.</p>
+      </div>
       <button type="button" class="pctinfo" id="pctBtn">ℹ️ Ako sa rátajú percentá?</button>
       <div class="roast hidden" id="gRoast" aria-live="polite"><span class="who" aria-hidden="true">😈</span><span class="bubble" id="gRoastText"></span></div>
       <p class="hint-note hidden" id="gHintNote"></p>
@@ -350,15 +357,9 @@ input[type=text],input[type=password],textarea{font-size:16px}
         <span class="coins num" id="gBest" title="Najbližší pokus">🪙 0 %</span>
       </div>
       <ul class="guesses" id="gList"></ul>
-      <div id="gTools">
-        <div class="row">
-          <button class="btn gold" id="gHint">💡 Nápoveda</button>
-          <button class="btn ghost" id="gGive">Vzdávam sa</button>
-        </div>
-        <p class="hint-cost" id="gHintCost">Nápoveda ťa bude stáť 3 pokusy navyše. Máš len jednu na hru.</p>
-      </div>
     </div>
   </section>
+  <div class="nav bottomnav"><a class="btn" id="navRounds" href="#kola">📜 Všetky kolá</a><button class="btn" id="navRules" type="button">❓ Pravidlá</button></div>
 </main>
 <div class="overlay intro hidden" id="intro" role="dialog" aria-modal="true" aria-labelledby="iTitle">
   <div class="panel">
@@ -442,7 +443,7 @@ input[type=text],input[type=password],textarea{font-size:16px}
   const today=()=>{const t=new Date();return t.getFullYear()+"-"+String(t.getMonth()+1).padStart(2,"0")+"-"+String(t.getDate()).padStart(2,"0");};
   const TODAY=today();
   const HINT_COST = 3;
-  const VERSION = "5.16";
+  const VERSION = "5.17";
   $("ver").textContent="verzia "+VERSION;
   if(XMAS){ startSnow(); }
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -930,8 +931,9 @@ input[type=text],input[type=password],textarea{font-size:16px}
     $("gCount").textContent=n+" "+(n===1?"pokus":n>=2&&n<=4?"pokusy":"pokusov")+(S.hinted&&!S.hintFree?" (+15 za nápovedu)":"");
     $("gBest").textContent="🪙 "+bestPct()+" %";
     if(!S.guesses.length) list.innerHTML='<li class="muted" style="display:block">Zatiaľ žiadne pokusy. Skús prvé slovo, ktoré ťa napadne.</li>';
-    [...S.guesses].sort((a,b)=>b.p-a.p||a.t-b.t).forEach(g=>{
+    [...S.guesses].sort((a,b)=>b.p-a.p||a.t-b.t).forEach((g,i)=>{
       const li=document.createElement("li");
+      if(i>=20) li.classList.add("hidden","extra");
       const filled=Math.max(1,Math.ceil(g.p/10));
       li.innerHTML='<span class="gw"></span><span class="gp num"></span><div class="meter">'+
         Array.from({length:10},(_,i)=>'<i style="'+(i<filled?"background:"+color(g.p):"")+'"></i>').join("")+'</div><span class="gl"></span>';
@@ -940,6 +942,12 @@ input[type=text],input[type=password],textarea{font-size:16px}
       li.querySelector(".gl").textContent="#"+g.t+" · "+label(g.p)+(g.h?" · nápoveda":"");
       list.appendChild(li);
     });
+    if(S.guesses.length>20){
+      const more=document.createElement("li"); more.style.display="block";
+      more.innerHTML='<button type="button" class="btn ghost" id="gMore">Zobraziť všetky ('+S.guesses.length+')</button>';
+      more.querySelector("button").onclick=()=>{ list.querySelectorAll("li.extra").forEach(x=>x.classList.remove("hidden")); more.remove(); };
+      list.appendChild(more);
+    }
     const hints=S.guesses.filter(g=>g.h);
     $("gHintNote").textContent="💡 "+hints.map(g=>g.w+" · "+g.p+" %").join(" · ");
     $("gHintNote").classList.toggle("hidden",!hints.length||done);
